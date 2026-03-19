@@ -1,0 +1,6 @@
+-- SQLBook: Code
+# Data Integrity Audit
+# File: blood_cell_anomaly_detection.csv
+SELECT COUNT(*) AS total_rows
+FROM blood_cell_anomaly_detection;      # confirms the number of rows to be 5880
+-- SQLBook: Code
