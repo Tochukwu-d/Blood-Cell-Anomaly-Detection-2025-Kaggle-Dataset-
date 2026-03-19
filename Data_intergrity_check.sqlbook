@@ -1,6 +1,6 @@
 -- SQLBook: Code
-# Data Integrity Audit
-# File: blood_cell_anomaly_detection.csv
+# Data Integrity Audit/Quality check.
+# File: blood_cell_anomaly_detection.csv, cell_type_reference.csv, cytodiffusion_benchmark_scores.csv
 SELECT
     `TABLE_NAME`,
     `TABLE_ROWS`
@@ -47,5 +47,22 @@ WHERE TABLE_NAME IN (
     'cell_type_reference' 
     'cytodiffusion_benchmark_scores')
 ORDER BY TABLE_NAME, ORDINAL_POSITION;
+
+# check for columns with null values
+SELECT   -- Select table names and build a SQL query string to count rows with nulls
+    TABLE_NAME, -- Table name in the DB
+    -- Build a SQL query as a string for each table
+    CONCAT(
+        'SELECT ''', TABLE_NAME, ''' AS table_name, COUNT(*) AS null_rows FROM ', TABLE_NAME,
+        ' WHERE ',  
+        GROUP_CONCAT(CONCAT(COLUMN_NAME, ' IS NULL') SEPARATOR ' OR ')
+    ) AS query_to_run
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE()
+  AND TABLE_NAME IN (
+    'blood_cell_anomaly_detection', 
+    'cell_type_reference', 
+    'cytodiffusion_benchmark_scores')
+GROUP BY TABLE_NAME;         # the queries are ran to give the number of null values in the tables
 
 
