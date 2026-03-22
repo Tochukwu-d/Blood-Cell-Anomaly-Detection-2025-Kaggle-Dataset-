@@ -29,7 +29,7 @@ WHERE `TABLE_SCHEMA` = "clinical_analyst_db"
 GROUP BY `TABLE_NAME`
 ORDER BY total_columns DESC;     # confirms the total number of columns in the dataset.
 
-# Get table descriptions
+# Get table descriptions.
 DESCRIBE blood_cell_anomaly_detection;
 DESCRIBE cell_type_reference;
 DESCRIBE cytodiffusion_benchmark_scores;
