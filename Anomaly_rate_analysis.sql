@@ -8,11 +8,13 @@ ORDER BY total_num DESC;     -- showing distribution of the different cell types
 
 SELECT
     cell_type,
+    disease_category,
     SUM(CASE WHEN anomaly_label = 1 THEN 1 ELSE 0 END) AS anomaly_cell_type_count,
     ROUND(
         SUM(CASE WHEN anomaly_label = 1 THEN 1 ELSE 0 END)
         / COUNT(*) * 100.0
     , 2) AS anomaly_rate_cell_type
 FROM blood_cell_anomaly_detection
-GROUP BY cell_type
-ORDER BY cell_type;    -- showing the anomaly rate of the different cell types and total count for each.
+GROUP BY cell_type, disease_category
+ORDER BY cell_type, disease_category;    -- showing the anomaly rate of the different cell types and total count for each.
+
