@@ -43,24 +43,56 @@ SELECT
     ) AS avg_cell_diameter,
 
     ROUND(
+        STDDEV(cell_diameter_um), 4
+    ) AS stddev_cell_diameter,
+
+    ROUND(
         AVG(cell_area_px), 4
     ) AS avg_cell_area,
+
+    ROUND(
+        STDDEV(cell_area_px), 4
+    ) AS stddev_cell_area,
 
     ROUND(
         AVG(circularity), 4
     ) AS avg_circularity,
 
     ROUND(
+        STDDEV(circularity), 4
+    ) AS stddev_circularity,
+
+    ROUND(
         AVG(eccentricity), 4
     ) AS avg_eccentricity,
+
+    ROUND(
+        STDDEV(eccentricity), 4
+    ) AS stddev_eccentricity,
 
     ROUND(
         AVG(lobularity_score), 4
     ) AS avg_lobularity_score,
 
     ROUND(
+        STDDEV(lobularity_score), 4
+    ) AS stddev_lobularity_score,
+
+    ROUND(
         AVG(membrane_smoothness), 4
-    ) AS avg_membrane_smoothness
+    ) AS avg_membrane_smoothness,
+
+    ROUND(
+        STDDEV(membrane_smoothness), 4
+    ) AS stddev_membrane_smoothness
 FROM blood_cell_anomaly_detection
 GROUP BY anomaly_label;
 
+/* 
+The cell_area_px shows the biggest average difference between the anomaly_label.
+Abnormal cells then to be larger, with abnormal physical characteristics compared to the normal cell types.
+
+Across all six morphological features, the average values are consistently higher than the standard deviation, 
+implying a low coefficient of variation. This suggests that the data exhibits limited dispersion relative to 
+its mean, indicating homogeneity in cell characteristics within each cell type.
+*/
