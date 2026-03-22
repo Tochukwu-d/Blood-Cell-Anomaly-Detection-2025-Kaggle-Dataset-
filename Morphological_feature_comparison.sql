@@ -37,7 +37,7 @@ GROUP BY cell_type
 ORDER BY cell_type;
 
 SELECT
-    cell_type,
+    anomaly_label,
     ROUND(
         AVG(cell_diameter_um), 4
     ) AS avg_cell_diameter,
@@ -62,5 +62,5 @@ SELECT
         AVG(membrane_smoothness), 4
     ) AS avg_membrane_smoothness
 FROM blood_cell_anomaly_detection
-GROUP BY cell_type
+GROUP BY anomaly_label;
 
