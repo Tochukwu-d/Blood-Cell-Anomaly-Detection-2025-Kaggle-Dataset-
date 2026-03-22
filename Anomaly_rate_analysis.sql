@@ -18,3 +18,6 @@ FROM blood_cell_anomaly_detection
 GROUP BY cell_type, disease_category
 ORDER BY cell_type, disease_category;    -- showing the anomaly rate of the different cell types and total count for each.
 
+/* Artefact, Leukemia, Anemia, Sickle_Cell_Anemia, Infection, 
+produces an exclusive abnormal cell types.*/
+
