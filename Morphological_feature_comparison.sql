@@ -36,5 +36,31 @@ FROM blood_cell_anomaly_detection
 GROUP BY cell_type
 ORDER BY cell_type;
 
+SELECT
+    cell_type,
+    ROUND(
+        AVG(cell_diameter_um), 4
+    ) AS avg_cell_diameter,
 
+    ROUND(
+        AVG(cell_area_px), 4
+    ) AS avg_cell_area,
+
+    ROUND(
+        AVG(circularity), 4
+    ) AS avg_circularity,
+
+    ROUND(
+        AVG(eccentricity), 4
+    ) AS avg_eccentricity,
+
+    ROUND(
+        AVG(lobularity_score), 4
+    ) AS avg_lobularity_score,
+
+    ROUND(
+        AVG(membrane_smoothness), 4
+    ) AS avg_membrane_smoothness
+FROM blood_cell_anomaly_detection
+GROUP BY cell_type
 
