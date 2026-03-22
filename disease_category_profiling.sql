@@ -67,6 +67,6 @@ GROUP BY anomaly_label;
 
 /* the Abnormal cells consititute only 31.97%, 
 while the Normal (anomaly_label = 0) constitute
-68.03% of the entire dataset.
+68.03% of the entire dataset..
 */
 
