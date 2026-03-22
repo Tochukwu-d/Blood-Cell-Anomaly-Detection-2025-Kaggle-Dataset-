@@ -13,7 +13,7 @@ SELECT
     ROUND(
         SUM(CASE WHEN anomaly_label = 1 THEN 1 ELSE 0 END)
         / COUNT(*) * 100.0
-    , 2) AS anomaly_rate_cell_type
+    , 2) AS anomaly_rate_cell_type  
 FROM blood_cell_anomaly_detection
 GROUP BY cell_type, disease_category
 ORDER BY cell_type, disease_category;    -- showing the anomaly rate of the different cell types and total count for each.
@@ -21,3 +21,22 @@ ORDER BY cell_type, disease_category;    -- showing the anomaly rate of the diff
 /* Artefact, Leukemia, Anemia, Sickle_Cell_Anemia, Infection, 
 produces an exclusive abnormal cell types.*/
 
+SELECT
+    cell_type,
+    disease_category,
+    anomaly_cell_type_count,
+    anomaly_rate_cell_type,
+    RANK() OVER (ORDER BY anomaly_rate_cell_type DESC) AS anomaly_ranking
+FROM (
+    SELECT
+        cell_type,
+        disease_category,
+        SUM(CASE WHEN anomaly_label = 1 THEN 1 ELSE 0 END) AS anomaly_cell_type_count,
+        ROUND(
+            SUM(CASE WHEN anomaly_label = 1 THEN 1 ELSE 0 END) 
+            / COUNT(*) * 100.0
+        , 2) AS anomaly_rate_cell_type
+    FROM blood_cell_anomaly_detection
+    GROUP BY cell_type, disease_category
+) t
+ORDER BY anomaly_ranking;       -- adding the ranking logic to the code
