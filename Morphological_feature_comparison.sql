@@ -230,7 +230,9 @@ FROM (
 ORDER BY difference_value DESC;
 
 /*
-The cell_area_px has a minimal overlap between normal range and abnormal values, 
-with gap of 39.09, making it a very diagnostic feature tool.
+The cell_area_px has a largest absolute separation between normal and anomal, 
+with gap of 39.09, making it a very clinically valuable for diagnosis.
+
+Membrane_smoothness has the smallest to almost no difference between the two groups
 */
 
