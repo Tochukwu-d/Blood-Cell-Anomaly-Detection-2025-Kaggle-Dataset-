@@ -236,3 +236,89 @@ with gap of 39.09, making it a very clinically valuable for diagnosis.
 Membrane_smoothness has the smallest to almost no difference between the two groups
 */
 
+
+-- Flagging clinical threshold candidates
+SELECT
+    a.cell_type,
+    -- Normal reference ranges
+    n.min_diameter,     n.max_diameter,
+    n.min_area,         n.max_area,
+    n.min_circularity,  n.max_circularity,
+    n.min_eccentricity, n.max_eccentricity,
+    n.min_lobularity,   n.max_lobularity,
+    n.min_smoothness,   n.max_smoothness,
+    -- Flag each feature against the normal reference range
+    CASE
+        WHEN a.avg_diameter BETWEEN n.min_diameter AND n.max_diameter
+        THEN 'Within range'
+        ELSE 'Outside range'
+    END AS diameter_flag,
+
+    CASE
+        WHEN a.avg_area BETWEEN n.min_area AND n.max_area
+        THEN 'Within range'
+        ELSE 'Outside range'
+    END AS area_flag,
+
+    CASE
+        WHEN a.avg_circularity  BETWEEN n.min_circularity AND n.max_circularity
+        THEN 'Within range'
+        ELSE 'Outside range'
+    END AS circularity_flag,
+
+    CASE
+        WHEN a.avg_eccentricity BETWEEN n.min_eccentricity  AND n.max_eccentricity
+        THEN 'Within range'
+        ELSE 'Outside range'
+    END AS eccentricity_flag,
+
+    CASE
+        WHEN a.avg_lobularity   BETWEEN n.min_lobularity AND n.max_lobularity
+        THEN 'Within range'
+        ELSE 'Outside range'
+    END AS lobularity_flag,
+
+    CASE
+        WHEN a.avg_smoothness   BETWEEN n.min_smoothness    AND n.max_smoothness
+        THEN 'Within range'
+        ELSE 'Outside range'
+    END AS smoothness_flag,
+    -- Total features outside normal range — clinical priority score
+    (
+        CASE WHEN a.avg_diameter     NOT BETWEEN n.min_diameter     AND n.max_diameter     THEN 1 ELSE 0 END +
+        CASE WHEN a.avg_area         NOT BETWEEN n.min_area          AND n.max_area         THEN 1 ELSE 0 END +
+        CASE WHEN a.avg_circularity  NOT BETWEEN n.min_circularity   AND n.max_circularity  THEN 1 ELSE 0 END +
+        CASE WHEN a.avg_eccentricity NOT BETWEEN n.min_eccentricity  AND n.max_eccentricity THEN 1 ELSE 0 END +
+        CASE WHEN a.avg_lobularity   NOT BETWEEN n.min_lobularity    AND n.max_lobularity   THEN 1 ELSE 0 END +
+        CASE WHEN a.avg_smoothness   NOT BETWEEN n.min_smoothness    AND n.max_smoothness   THEN 1 ELSE 0 END
+    ) AS features_outside_normal_range
+
+FROM
+    (
+        SELECT
+            cell_type,
+            AVG(cell_diameter_um)    AS avg_diameter,
+            AVG(cell_area_px)        AS avg_area,
+            AVG(circularity)         AS avg_circularity,
+            AVG(eccentricity)        AS avg_eccentricity,
+            AVG(lobularity_score)    AS avg_lobularity,
+            AVG(membrane_smoothness) AS avg_smoothness
+        FROM blood_cell_anomaly_detection
+        WHERE anomaly_label = 1
+        GROUP BY cell_type
+    ) AS a
+
+    CROSS JOIN
+    (
+        SELECT
+            MIN(cell_diameter_um)    AS min_diameter,     MAX(cell_diameter_um)    AS max_diameter,
+            MIN(cell_area_px)        AS min_area,          MAX(cell_area_px)        AS max_area,
+            MIN(circularity)         AS min_circularity,   MAX(circularity)         AS max_circularity,
+            MIN(eccentricity)        AS min_eccentricity,  MAX(eccentricity)        AS max_eccentricity,
+            MIN(lobularity_score)    AS min_lobularity,    MAX(lobularity_score)    AS max_lobularity,
+            MIN(membrane_smoothness) AS min_smoothness,    MAX(membrane_smoothness) AS max_smoothness
+        FROM blood_cell_anomaly_detection
+        WHERE anomaly_label = 0
+    ) AS n
+
+ORDER BY features_outside_normal_range DESC;
