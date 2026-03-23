@@ -229,4 +229,8 @@ FROM (
 
 ORDER BY difference_value DESC;
 
+/*
+The cell_area_px has a minimal overlap between normal range and abnormal values, 
+with gap of 39.09, making it a very diagnostic feature tool.
+*/
 
