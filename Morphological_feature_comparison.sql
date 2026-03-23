@@ -150,3 +150,83 @@ SELECT
     ) AS stddev_membrane_smoothness
 FROM blood_cell_anomaly_detection
 GROUP BY cell_type, anomaly_label;
+
+-- finding feature characteristics with largest seperation
+SELECT *
+FROM (
+
+    SELECT
+        'cell_diameter_um' AS cell_type_feature,
+        ROUND(AVG(CASE WHEN anomaly_label = 0 THEN cell_diameter_um    ELSE NULL END), 2) AS normal_avg,
+        ROUND(AVG(CASE WHEN anomaly_label = 1 THEN cell_diameter_um    ELSE NULL END), 2) AS anomaly_avg,
+        ABS(
+            ROUND(AVG(CASE WHEN anomaly_label = 1 THEN cell_diameter_um ELSE NULL END), 2) -
+            ROUND(AVG(CASE WHEN anomaly_label = 0 THEN cell_diameter_um ELSE NULL END), 2)
+        ) AS difference_value
+    FROM blood_cell_anomaly_detection
+
+    UNION ALL
+
+    SELECT
+        'cell_area_px' AS cell_type_feature,
+        ROUND(AVG(CASE WHEN anomaly_label = 0 THEN cell_area_px ELSE NULL END), 2) AS normal_avg,
+        ROUND(AVG(CASE WHEN anomaly_label = 1 THEN cell_area_px ELSE NULL END), 2) AS anomaly_avg,
+        ABS(
+            ROUND(AVG(CASE WHEN anomaly_label = 1 THEN cell_area_px ELSE NULL END), 2) -
+            ROUND(AVG(CASE WHEN anomaly_label = 0 THEN cell_area_px ELSE NULL END), 2)
+        ) AS difference_value
+    FROM blood_cell_anomaly_detection
+
+    UNION ALL
+
+    SELECT
+        'circularity' AS cell_type_feature,
+        ROUND(AVG(CASE WHEN anomaly_label = 0 THEN circularity ELSE NULL END), 2) AS normal_avg,
+        ROUND(AVG(CASE WHEN anomaly_label = 1 THEN circularity ELSE NULL END), 2) AS anomaly_avg,
+        ABS(
+            ROUND(AVG(CASE WHEN anomaly_label = 1 THEN circularity ELSE NULL END), 2) -
+            ROUND(AVG(CASE WHEN anomaly_label = 0 THEN circularity ELSE NULL END), 2)
+        ) AS difference_value
+    FROM blood_cell_anomaly_detection
+
+    UNION ALL
+
+    SELECT
+        'eccentricity' AS cell_type_feature,
+        ROUND(AVG(CASE WHEN anomaly_label = 0 THEN eccentricity ELSE NULL END), 2) AS normal_avg,
+        ROUND(AVG(CASE WHEN anomaly_label = 1 THEN eccentricity ELSE NULL END), 2) AS anomaly_avg,
+        ABS(
+            ROUND(AVG(CASE WHEN anomaly_label = 1 THEN eccentricity     ELSE NULL END), 2) -
+            ROUND(AVG(CASE WHEN anomaly_label = 0 THEN eccentricity     ELSE NULL END), 2)
+        ) AS difference_value
+    FROM blood_cell_anomaly_detection
+
+    UNION ALL
+
+    SELECT
+        'lobularity_score' AS cell_type_feature,
+        ROUND(AVG(CASE WHEN anomaly_label = 0 THEN lobularity_score ELSE NULL END), 2) AS normal_avg,
+        ROUND(AVG(CASE WHEN anomaly_label = 1 THEN lobularity_score ELSE NULL END), 2) AS anomaly_avg,
+        ABS(
+            ROUND(AVG(CASE WHEN anomaly_label = 1 THEN lobularity_score ELSE NULL END), 2) -
+            ROUND(AVG(CASE WHEN anomaly_label = 0 THEN lobularity_score ELSE NULL END), 2)
+        ) AS difference_value
+    FROM blood_cell_anomaly_detection
+
+    UNION ALL
+
+    SELECT
+        'membrane_smoothness' AS cell_type_feature,
+        ROUND(AVG(CASE WHEN anomaly_label = 0 THEN membrane_smoothness ELSE NULL END), 2) AS normal_avg,
+        ROUND(AVG(CASE WHEN anomaly_label = 1 THEN membrane_smoothness ELSE NULL END), 2) AS anomaly_avg,
+        ABS(
+            ROUND(AVG(CASE WHEN anomaly_label = 1 THEN membrane_smoothness ELSE NULL END), 2) -
+            ROUND(AVG(CASE WHEN anomaly_label = 0 THEN membrane_smoothness ELSE NULL END), 2)
+        ) AS difference_value
+    FROM blood_cell_anomaly_detection
+
+) AS difference_value
+
+ORDER BY difference_value DESC;
+
+
